@@ -202,47 +202,59 @@ class Level {
 
 class Player {
   static SYMBOLS = ["@"]
-  static playerXSpeed = 7;
-  static gravity = 30;
-  static jumpSpeed = 17;
   static startPosDeviation = new Vec(0, -0.5);
   static startSpeed = new Vec(0, 0);
 
-  constructor(pos, speed) {
+  constructor(pos, speed, physics) {
     this.pos = pos;
     this.speed = speed;
+    this.physics = physics
   }
 
   static create(pos) {
     const startPos = pos.plus(startPosDeviation)
-    return new Player(startPos, startSpeed);
+    const physic = new PhysicsOfPlayer();
+    return new Player(startPos, startSpeed, physic);
   }
 
   update(time, state, keys) {
-    let xSpeed = 0;
-    if (keys.ArrowLeft) xSpeed -= playerXSpeed;
-    if (keys.ArrowRight) xSpeed += playerXSpeed;
-    let pos = this.pos;
-    let movedX = pos.plus(new Vec(xSpeed * time, 0));
-    if (!state.level.touches(movedX, this.size, "wall")) {
-      pos = movedX;
-    }
-  
-    let ySpeed = this.speed.y + time * gravity;
-    let movedY = pos.plus(new Vec(0, ySpeed * time));
-    if (!state.level.touches(movedY, this.size, "wall")) {
-      pos = movedY;
-    } else if (keys.ArrowUp && ySpeed > 0) {
-      ySpeed = -jumpSpeed;
-    } else {
-      ySpeed = 0;
-    }
-    return new Player(pos, new Vec(xSpeed, ySpeed));
+    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this.pos, this.speed, time, state, keys);
+    return new Player( updatedPosAndSpeed.pos, updatedPosAndSpeed.speed );
   };
 }
 Player.prototype.size = new Vec(0.8, 1.5);
 Player.prototype.type = "player"
 
+
+class PhysicsOfPlayer {
+
+  #playerXSpeed = 7;
+  #gravity = 30;
+  #jumpSpeed = 17;
+
+  getUpdatedPosAndSpeed( pos, speed, time, state, keys ) {
+    const xSpeed = 0;
+    if (keys.ArrowLeft) xSpeed -= this.#playerXSpeed;
+    if (keys.ArrowRight) xSpeed += this.#playerXSpeed;
+
+    const updatedPos = pos.copy()
+    const movedX = updatedPos.plus(new Vec(xSpeed * time, 0));
+    if (!state.level.touches(movedX, this.size, "wall")) {
+      updatedPos = movedX;
+    }
+  
+    const ySpeed = speed.y + time * this.#gravity;
+    const movedY = updatedPos.plus(new Vec(0, ySpeed * time));
+    if (!state.level.touches(movedY, this.size, "wall")) {
+      updatedPos = movedY;
+    } else if (keys.ArrowUp && ySpeed > 0) {
+      ySpeed = -this.#jumpSpeed;
+    } else {
+      ySpeed = 0;
+    }
+    return { pos: updatedPos, speed: new Vec(xSpeed, ySpeed)};
+  }
+}
 
 
 class Lava {
@@ -330,6 +342,9 @@ class Vec {
   }
   times(factor) {
     return new Vec(this.x * factor, this.y * factor);
+  }
+  copy() {
+    return new Vec(this.x, this.y)
   }
 }
 

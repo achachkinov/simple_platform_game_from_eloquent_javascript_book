@@ -1,4 +1,4 @@
-var GAME_LEVELS = `
+var OUR_GAME_LEVELS = `
 ............................................
 ..#................#........................
 ..#..............=.#........................
@@ -30,7 +30,7 @@ var GAME_LEVELS = `
 
 
 if (typeof module != "undefined" && module.exports && (typeof window == "undefined" || window.exports != exports))
-    module.exports = GAME_LEVELS;
+    module.exports = OUR_GAME_LEVELS;
   if (typeof global != "undefined" && !global.GAME_LEVELS)
-    global.GAME_LEVELS = GAME_LEVELS;
+    global.OUR_GAME_LEVELS = OUR_GAME_LEVELS;
   
