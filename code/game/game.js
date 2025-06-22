@@ -1,21 +1,22 @@
+const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
+
 class LevelRunner {
-  static trackKeys = ["ArrowLeft", "ArrowRight", "ArrowUp"]
   #display
   #state
   #ending
-  #lastTime
-  #trackKeys
+  //#lastTime
+  #trackerKeys
   #resolve
 
-  constructor( level, trackKeys, Display ) {
-    this.#trackKeys = trackKeys
-    this.#lastTime = null;
+  constructor( level, trackerKeys, Display ) {
+    this.#trackerKeys = trackerKeys
+    this.lastTime = null;
     this.#trackKeysInit();
     this.#initState( level, Display )
   }
 
   #trackKeysInit() {
-    this.trackKeys.addKeysToTrack(trackKeys)
+    this.#trackerKeys.addKeysToTrack(TRACK_KEYS)
   }
   #initState( level, Display ) {
     this.#display = new Display(document.body, level);
@@ -31,20 +32,20 @@ class LevelRunner {
   }
   
   runAnimation(time) {
-    if (this.#lastTime != null) {
-      let timeStep = Math.min(time - lastTime, 100) / 1000;
+    if (this.lastTime != null) {
+      let timeStep = Math.min(time - this.lastTime, 100) / 1000;
       if ( this.#frameFunct(timeStep) === false) return;
     }
-    this.#lastTime = time;
-    requestAnimationFrame(this.runAnimation);
+    this.lastTime = time;
+    requestAnimationFrame( time => {this.runAnimation(time)});
   }
 
   #frameFunct( time ) {
-    this.#state = this.#state.update(time, this.#trackKeys.currentlyPressedKeys);
+    this.#state = this.#state.update(time, this.#trackerKeys.currentlyPressedKeys);
     this.#display.syncState(this.#state);
     if (this.#state.status == "playing") {
       return true;
-    } else if (ending > 0) {
+    } else if (this.#ending > 0) {
       this.#ending -= time;
       return true;
     } else {
@@ -56,17 +57,16 @@ class LevelRunner {
 }
 
 
+class TrackerKeys {
+  #downKeys = new Set();
+  #trackedKeys = new Set();
 
-class TrackKeys {
-  static #downKeys = new Set();
-  static #trackedKeys = new Set();
-
-  static {
+  constructor() {
     window.addEventListener('keydown', (e) => this.#handleKeyEvent(e));
     window.addEventListener('keyup', (e) => this.#handleKeyEvent(e));
   }
 
-  static #handleKeyEvent(event) {
+  #handleKeyEvent(event) {
     if (this.#trackedKeys.has(event.key)) {
       if (event.type === 'keydown') {
         this.#downKeys.add(event.key);
@@ -77,20 +77,24 @@ class TrackKeys {
     }
   }
 
-  static addKeysToTrack(keys) {
+  addKeysToTrack(keys) {
     keys.forEach(key => this.#trackedKeys.add(key));
   }
 
-  static removeKeysToTrack(keys) {
+  removeKeysToTrack(keys) {
     keys.forEach(key => this.#trackedKeys.delete(key));
   }
 
-  static isKeyDown(key) {
+  isKeyDown(key) {
     return this.#downKeys.has(key);
   }
 
-  static get currentlyPressedKeys() {
+  get currentlyPressedKeys() {
     return Array.from(this.#downKeys);
+  }
+
+  close() {
+
   }
 }
 
@@ -175,7 +179,7 @@ class Level {
           return this.#staticSymbols[ ch ]
         } else if ( this.#actorSymbols[ ch ] ) {
           let pos = new Vec(x, y);
-          this.startActors.push(type.create(pos, ch));
+          this.startActors.push(this.#actorSymbols[ ch ].create(pos, ch));
           return "empty";
         }
       });
@@ -200,6 +204,22 @@ class Level {
 }
 
 
+class Vec {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+  }
+  plus(other) {
+    return new Vec(this.x + other.x, this.y + other.y);
+  }
+  times(factor) {
+    return new Vec(this.x * factor, this.y * factor);
+  }
+  copy() {
+    return new Vec(this.x, this.y)
+  }
+}
+
+
 class Player {
   static SYMBOLS = ["@"]
   static startPosDeviation = new Vec(0, -0.5);
@@ -212,14 +232,14 @@ class Player {
   }
 
   static create(pos) {
-    const startPos = pos.plus(startPosDeviation)
+    const startPos = pos.plus(this.startPosDeviation)
     const physic = new PhysicsOfPlayer();
-    return new Player(startPos, startSpeed, physic);
+    return new Player(startPos, this.startSpeed, physic);
   }
 
   update(time, state, keys) {
-    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this.pos, this.speed, time, state, keys);
-    return new Player( updatedPosAndSpeed.pos, updatedPosAndSpeed.speed );
+    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this.pos, this.speed, this.size, time, state, keys);
+    return new Player( updatedPosAndSpeed.pos, updatedPosAndSpeed.speed, this.physics );
   };
 }
 Player.prototype.size = new Vec(0.8, 1.5);
@@ -232,22 +252,26 @@ class PhysicsOfPlayer {
   #gravity = 30;
   #jumpSpeed = 17;
 
-  getUpdatedPosAndSpeed( pos, speed, time, state, keys ) {
-    const xSpeed = 0;
-    if (keys.ArrowLeft) xSpeed -= this.#playerXSpeed;
-    if (keys.ArrowRight) xSpeed += this.#playerXSpeed;
+  getUpdatedPosAndSpeed( pos, speed, size, time, state, keys ) {
+    let xSpeed = 0;
+    if (keys.includes("ArrowLeft")) { 
+      xSpeed -= this.#playerXSpeed
+    };
+    if (keys.includes("ArrowRight")) {
+      xSpeed += this.#playerXSpeed
+    };
 
-    const updatedPos = pos.copy()
+    let updatedPos = pos.copy()
     const movedX = updatedPos.plus(new Vec(xSpeed * time, 0));
-    if (!state.level.touches(movedX, this.size, "wall")) {
+    if (!state.level.touches(movedX, size, "wall")) {
       updatedPos = movedX;
     }
   
-    const ySpeed = speed.y + time * this.#gravity;
+    let ySpeed = speed.y + time * this.#gravity;
     const movedY = updatedPos.plus(new Vec(0, ySpeed * time));
-    if (!state.level.touches(movedY, this.size, "wall")) {
+    if (!state.level.touches(movedY, size, "wall")) {
       updatedPos = movedY;
-    } else if (keys.ArrowUp && ySpeed > 0) {
+    } else if (keys.includes("ArrowUp") && ySpeed > 0) {
       ySpeed = -this.#jumpSpeed;
     } else {
       ySpeed = 0;
@@ -316,7 +340,7 @@ class Coin {
 
   collide(state) {
     const filtered = state.actors.filter(a => a != this);
-    const status = state.status;
+    let status = state.status;
     if (!filtered.some(a => a.type == "coin")) status = "won";
     return new State(state.level, filtered, status);
   };
@@ -333,20 +357,7 @@ Coin.prototype.type = "coin";
 
 
 
-class Vec {
-  constructor(x, y) {
-    this.x = x; this.y = y;
-  }
-  plus(other) {
-    return new Vec(this.x + other.x, this.y + other.y);
-  }
-  times(factor) {
-    return new Vec(this.x * factor, this.y * factor);
-  }
-  copy() {
-    return new Vec(this.x, this.y)
-  }
-}
+
 
 
 

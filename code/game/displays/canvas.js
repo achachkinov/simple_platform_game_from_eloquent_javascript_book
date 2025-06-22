@@ -12,6 +12,76 @@ const spritesOnImage = {
     "y": 0,
     "width": 20,
     "height": 20
+  },
+  "coin" : {
+    "x": 40,
+    "y": 0,
+    "width": 20,
+    "height": 20
+  }
+}
+
+
+const spritesOnImageOfPlayer = {
+  "move0": {
+    "x": 0,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move1" : {
+    "x": 24,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move2" : {
+    "x": 48,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move3" : {
+    "x": 72,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move4" : {
+    "x": 96,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move5" : {
+    "x": 120,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move6" : {
+    "x": 144,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "move7" : {
+    "x": 168,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "rest" : {
+    "x": 192,
+    "y": 0,
+    "width": 24,
+    "height": 30
+  },
+  "jump" : {
+    "x": 216,
+    "y": 0,
+    "width": 24,
+    "height": 30
   }
 }
 
@@ -28,12 +98,6 @@ const results = [
   {name: "Unsatisfied", count: 510, color: "pink"},
   {name: "No comment", count: 175, color: "silver"}
 ];
-
-function flipHorizontally(context, around) {
-  context.translate(around, 0);
-  context.scale(-1, 1);
-  context.translate(-around, 0);
-}
 
 class CanvasDisplay {
   constructor(parent, level) {
@@ -80,11 +144,11 @@ class CanvasDisplay {
 
   clearDisplay(status) {
     if (status == "won") {
-      this.clearByColor("rgb(68, 191, 255)")
+      this.cw.clearByColor("rgb(68, 191, 255)")
     } else if (status == "lost") {
-      this.clearByColor("rgb(44, 136, 214)")
+      this.cw.clearByColor("rgb(44, 136, 214)")
     } else {
-      this.clearByColor("rgb(52, 166, 251)")
+      this.cw.clearByColor("rgb(52, 166, 251)")
     }
   };  
 
@@ -102,7 +166,7 @@ class CanvasDisplay {
         let screenX = (x - left) * scale;
         let screenY = (y - top) * scale;
         const sprite = spritesOnImage[ tile ]
-        this.cw.drawSprite( sprite, screenX, screenY )
+        this.cw.drawSprite( otherSprites, sprite, screenX, screenY )
       }
     }
   };
@@ -116,8 +180,8 @@ class CanvasDisplay {
       if (actor.type == "player") {
         this.drawPlayer(actor, x, y, width, height);
       } else {
-        let tileX = (actor.type == "coin" ? 2 : 1) * scale;
-        this.cx.drawImage(otherSprites, tileX, 0, width, height, x, y, width, height);
+        const sprite = spritesOnImage[ actor.type ]
+        this.cw.drawSprite( otherSprites, sprite, x, y )
       }
     }
   };  
@@ -126,25 +190,25 @@ class CanvasDisplay {
     width += playerXOverlap * 2;
     x -= playerXOverlap;
     if (player.speed.x != 0) {
-    this.flipPlayer = player.speed.x < 0;
+      this.flipPlayer = player.speed.x < 0;
     }
 
-    let tile = 8;
+    let tile = "rest";
     if (player.speed.y != 0) {
-      tile = 9;
+      tile = "jump";
     } else if (player.speed.x != 0) {
-      tile = Math.floor(Date.now() / 60) % 8;
+      tile = "move" + Math.floor(Date.now() / 60) % 8;
     }
+    const sprite = spritesOnImageOfPlayer[ tile ]
 
-    this.cx.save();
-    if (this.flipPlayer) {
-      flipHorizontally(this.cx, x + width / 2);
+    if ( this.flipPlayer ) {
+      this.cw.drawFlipedSprite( playerSprites, sprite, x, y );
+    } else {
+      this.cw.drawSprite( playerSprites, sprite, x, y );
     }
-    let tileX = tile * width;
-    this.cx.drawImage(playerSprites, tileX, 0, width, height, x, y, width, height);
-    this.cx.restore();
   };
 }
+
 
 class ContextWrapper {
   constructor( parent, level ) {
@@ -161,11 +225,24 @@ class ContextWrapper {
   }
 
   remove() {
-    this.cx.remove()
+    this.canvas.remove()
   }
 
-  drawSprite( sprite, screenX, screenY ) {
-    this.cx.drawImage(otherSprites, sprite.x, sprite.y, sprite.width, sprite.height, screenX, screenY, sprite.width, sprite.height);
+  drawSprite( img, sprite, screenX, screenY ) {
+    this.cx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height, screenX, screenY, sprite.width, sprite.height);
+  }
+
+  drawFlipedSprite( img, sprite, screenX, screenY ) {
+    this.cx.save();
+    this.#flipHorizontally( screenX + sprite.width / 2);
+    this.drawSprite( img, sprite, screenX, screenY )
+    this.cx.restore();
+  }
+
+  #flipHorizontally( around ) {
+    this.cx.translate(around, 0);
+    this.cx.scale(-1, 1);
+    this.cx.translate(-around, 0);
   }
 
   get height() {

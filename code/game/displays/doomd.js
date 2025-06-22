@@ -1,6 +1,6 @@
-const scale = 20;
-
 class DOMDisplay {
+  #scale = 20
+
   constructor(parent, level) {
     this.dom = DOMDisplay.elt("div", {class: "game"}, this.drawGrid(level));
     this.actorLayer = null;
