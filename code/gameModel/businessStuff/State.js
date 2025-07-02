@@ -20,9 +20,7 @@ class State {
     if (newState.status != "playing") return newState;
   
     let player = newState.player;
-    if (this.level.touches(player.pos, player.size, "lava")) {
-      return new State(this.level, actors, "lost");
-    }
+    newState = player.updateState( newState )
   
     for (let actor of actors) {
       if (actor != player && this.#overlap(actor, player)) {

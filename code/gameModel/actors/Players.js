@@ -19,6 +19,12 @@ class Player {
     const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this.pos, this.speed, this.size, time, state, keys);
     return new Player( updatedPosAndSpeed.pos, updatedPosAndSpeed.speed, this.physics );
   };
+
+  updateState( state ) {
+    if ( LevelUtils.touches( state.level, this.pos, this.size, "lava")) {
+      return new State(state.level, actors, "lost");
+    }
+  }
 }
 Player.prototype.size = new Vec(0.8, 1.5);
 Player.prototype.type = "player"
