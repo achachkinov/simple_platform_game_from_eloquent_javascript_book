@@ -4,16 +4,14 @@ class LevelParser {
     "#":"wall",
     "+":"lava" 
   }
-  #actorClasses = [ Player, Lava, Coin ]
   #actorSymbols = {}
 
-  constructor(plan) {
+  constructor() {
     this.#generateActorSymbols()
-    this.#initializateRows(plan)
   }
 
-  #generateActorSymbols() {
-    for ( const actorClass of this.#actorClasses ) {
+  #generateActorSymbols( actorClasses ) {
+    for ( const actorClass of actorClasses) {
       const symbols = actorClass.SYMBOLS;
       for ( const symbol of symbols ) {
         this.#actorSymbols[ symbol ] = actorClass;
@@ -21,23 +19,25 @@ class LevelParser {
     }
   }
 
-  #initializateRows(plan) {
-    let rows = plan.trim().split("\n").map(l => [...l]);
-    this.height = rows.length;
-    this.width = rows[0].length;
-    this.startActors = [];
+  parse(plan) {
+    const rowsWitchActors = plan.trim().split("\n").map(l => [...l]);
+    const height = rowsWitchActors.length;
+    const width = rowsWitchActors[0].length;
+    const startActors = [];
 
-    this.rows = rows.map((row, y) => {
+    const rows = rowsWitchActors.map((row, y) => {
       return row.map((ch, x) => {
         if ( this.#staticSymbols[ ch ] ) {
           return this.#staticSymbols[ ch ]
         } else if ( this.#actorSymbols[ ch ] ) {
           let pos = new Vec(x, y);
-          this.startActors.push(this.#actorSymbols[ ch ].create(pos, ch));
+          startActors.push(this.#actorSymbols[ ch ].create(pos, ch));
           return "empty";
         }
       });
     });
+
+    return { height, width, startActors, rows}
   }
 }
   
