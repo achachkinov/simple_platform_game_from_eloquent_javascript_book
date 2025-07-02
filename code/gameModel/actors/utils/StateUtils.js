@@ -1,4 +1,4 @@
-class LevelUtils {
+class StateUtils {
   constructor() {}
 
   static touches(state, pos, size, type) {

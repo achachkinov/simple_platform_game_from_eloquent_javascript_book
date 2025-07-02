@@ -21,7 +21,7 @@ class Player {
   };
 
   updateState( state ) {
-    if ( LevelUtils.touches( state.level, this.pos, this.size, "lava")) {
+    if ( StateUtils.touches( state.level, this.pos, this.size, "lava")) {
       return new State(state.level, actors, "lost");
     }
   }
