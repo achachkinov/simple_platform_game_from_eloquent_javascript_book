@@ -37,7 +37,8 @@ class LevelParser {
       });
     });
 
-    return { height, width, startActors, rows}
+    const level = { height, width, startActors, rows }
+    return level
   }
 }
   

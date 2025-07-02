@@ -1,12 +1,14 @@
-const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
-
 class TrackerKeys {
   #downKeys = new Set();
   #trackedKeys = new Set();
 
-  constructor() {
+  constructor( keys ) {
     window.addEventListener('keydown', (e) => this.#handleKeyEvent(e));
     window.addEventListener('keyup', (e) => this.#handleKeyEvent(e));
+
+    if ( keys ) {
+      this.addKeysToTrack( keys )
+    }
   }
 
   #handleKeyEvent(event) {

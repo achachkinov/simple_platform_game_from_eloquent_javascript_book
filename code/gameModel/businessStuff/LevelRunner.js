@@ -9,13 +9,9 @@ class LevelRunner {
   constructor( level, trackerKeys, Display ) {
     this.#trackerKeys = trackerKeys
     this.lastTime = null;
-    this.#trackKeysInit();
     this.#initState( level, Display )
   }
 
-  #trackKeysInit() {
-    this.#trackerKeys.addKeysToTrack(TRACK_KEYS)
-  }
   #initState( level, Display ) {
     this.#display = new Display(document.body, level);
     this.#state = State.start(level);
