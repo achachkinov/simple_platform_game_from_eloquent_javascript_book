@@ -1,5 +1,3 @@
-const scale = 20;
-
 const spritesOnImage = {
   "lava": {
     "x": 20,
@@ -89,8 +87,7 @@ const otherSprites = document.createElement("img");
 otherSprites.src = "img/sprites.png";
 
 const playerSprites = document.createElement("img");
-playerSprites.src = "img/player.png";
-const playerXOverlap = 4;
+playerSprites.src = "img/CJ.png";
 
 const results = [
   {name: "Satisfied", count: 1043, color: "lightblue"},
@@ -108,8 +105,8 @@ class CanvasDisplay {
     this.viewport = {
       left: 0,
       top: 0,
-      width: this.cw.width / scale,
-      height: this.cw.height / scale
+      width: this.cw.width,
+      height: this.cw.height
     };
   }
 
@@ -163,8 +160,8 @@ class CanvasDisplay {
       for (let x = xStart; x < xEnd; x++) {
         let tile = level.rows[y][x];
         if (tile == "empty") continue;
-        let screenX = (x - left) * scale;
-        let screenY = (y - top) * scale;
+        let screenX = (x - left);
+        let screenY = (y - top);
         const sprite = spritesOnImage[ tile ]
         this.cw.drawSprite( otherSprites, sprite, screenX, screenY )
       }
@@ -173,10 +170,10 @@ class CanvasDisplay {
 
   drawActors(actors) {
     for (let actor of actors) {
-      let width = actor.size.x * scale;
-      let height = actor.size.y * scale;
-      let x = (actor.pos.x - this.viewport.left) * scale;
-      let y = (actor.pos.y - this.viewport.top) * scale;
+      let width = actor.size.x;
+      let height = actor.size.y;
+      let x = (actor.pos.x - this.viewport.left);
+      let y = (actor.pos.y - this.viewport.top);
       if (actor.type == "player") {
         this.drawPlayer(actor, x, y, width, height);
       } else {
@@ -186,8 +183,8 @@ class CanvasDisplay {
     }
   };  
 
-  drawPlayer(player, x, y, width, height) {
-    width += playerXOverlap * 2;
+  drawPlayer(player, x, y) {
+    const playerXOverlap = 0.2;
     x -= playerXOverlap;
     if (player.speed.x != 0) {
       this.flipPlayer = player.speed.x < 0;
@@ -212,9 +209,10 @@ class CanvasDisplay {
 
 class ContextWrapper {
   constructor( parent, level ) {
+    this.scale = 40;
     this.canvas = document.createElement("canvas");
-    this.canvas.width = Math.min(600, level.width * scale);
-    this.canvas.height = Math.min(450, level.height * scale);
+    this.canvas.width = Math.min(1200, level.width * this.scale);
+    this.canvas.height = Math.min(900, level.height * this.scale);
     parent.appendChild(this.canvas);
     this.cx = this.canvas.getContext("2d");
   }
@@ -229,12 +227,12 @@ class ContextWrapper {
   }
 
   drawSprite( img, sprite, screenX, screenY ) {
-    this.cx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height, screenX, screenY, sprite.width, sprite.height);
+    this.cx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height, screenX*this.scale, screenY*this.scale, sprite.width*this.scale/20, sprite.height*this.scale/20);
   }
 
   drawFlipedSprite( img, sprite, screenX, screenY ) {
     this.cx.save();
-    this.#flipHorizontally( screenX + sprite.width / 2);
+    this.#flipHorizontally( screenX*this.scale + sprite.width*(this.scale/20) / 2);
     this.drawSprite( img, sprite, screenX, screenY )
     this.cx.restore();
   }
@@ -246,9 +244,9 @@ class ContextWrapper {
   }
 
   get height() {
-    return this.canvas.height
+    return this.canvas.height/this.scale
   }
   get width() {
-    return this.canvas.width
+    return this.canvas.width/this.scale
   }
 }
