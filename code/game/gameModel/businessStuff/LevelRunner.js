@@ -1,55 +1,55 @@
 class LevelRunner {
-    #display
-    #state
-    #ending
-    //#lastTime
-    #trackerKeys
-    #resolve
+  #display
+  #state
+  #ending
+  //#lastTime
+  #trackerKeys
+  #resolve
+
+  constructor( level, trackerKeys, Display ) {
+    this.#trackerKeys = trackerKeys
+    this.lastTime = null;
+    this.#trackKeysInit();
+    this.#initState( level, Display )
+  }
+
+  #trackKeysInit() {
+    this.#trackerKeys.addKeysToTrack(TRACK_KEYS)
+  }
+  #initState( level, Display ) {
+    this.#display = new Display(document.body, level);
+    this.#state = State.start(level);
+    this.#ending = 1;
+  }
   
-    constructor( level, trackerKeys, Display ) {
-      this.#trackerKeys = trackerKeys
-      this.lastTime = null;
-      this.#trackKeysInit();
-      this.#initState( level, Display )
-    }
+  run() {
+    return new Promise(resolve => {
+      this.#resolve = resolve
+      this.runAnimation();
+    });
+  }
   
-    #trackKeysInit() {
-      this.#trackerKeys.addKeysToTrack(TRACK_KEYS)
+  runAnimation(time) {
+    if (this.lastTime != null) {
+      let timeStep = Math.min(time - this.lastTime, 100) / 1000;
+      if ( this.#frameFunct(timeStep) === false) return;
     }
-    #initState( level, Display ) {
-      this.#display = new Display(document.body, level);
-      this.#state = State.start(level);
-      this.#ending = 1;
-    }
-    
-    run() {
-      return new Promise(resolve => {
-        this.#resolve = resolve
-        this.runAnimation();
-      });
-    }
-    
-    runAnimation(time) {
-      if (this.lastTime != null) {
-        let timeStep = Math.min(time - this.lastTime, 100) / 1000;
-        if ( this.#frameFunct(timeStep) === false) return;
-      }
-      this.lastTime = time;
-      requestAnimationFrame( time => {this.runAnimation(time)});
-    }
-  
-    #frameFunct( time ) {
-      this.#state = this.#state.update(time, this.#trackerKeys.currentlyPressedKeys);
-      this.#display.syncState(this.#state);
-      if (this.#state.status == "playing") {
-        return true;
-      } else if (this.#ending > 0) {
-        this.#ending -= time;
-        return true;
-      } else {
-        this.#display.clear();
-        this.#resolve(this.#state.status);
-        return false;
-      }
+    this.lastTime = time;
+    requestAnimationFrame( time => {this.runAnimation(time)});
+  }
+
+  #frameFunct( time ) {
+    this.#state = this.#state.update(time, this.#trackerKeys.currentlyPressedKeys);
+    this.#display.syncState(this.#state);
+    if (this.#state.status == "playing") {
+      return true;
+    } else if (this.#ending > 0) {
+      this.#ending -= time;
+      return true;
+    } else {
+      this.#display.clear();
+      this.#resolve(this.#state.status);
+      return false;
     }
   }
+}

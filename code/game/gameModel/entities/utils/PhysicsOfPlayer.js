@@ -15,13 +15,13 @@ class PhysicsOfPlayer {
 
     let updatedPos = pos.copy()
     const movedX = updatedPos.plus(new Vec(xSpeed * time, 0));
-    if (!state.level.touches(movedX, size, "wall")) {
+    if ( LevelUtils.touches( state, movedX, size, "wall") ) {
       updatedPos = movedX;
     }
   
     let ySpeed = speed.y + time * this.#gravity;
     const movedY = updatedPos.plus(new Vec(0, ySpeed * time));
-    if (!state.level.touches(movedY, size, "wall")) {
+    if ( LevelUtils.touches( state, movedY, size, "wall") ) {
       updatedPos = movedY;
     } else if (keys.includes("ArrowUp") && ySpeed > 0) {
       ySpeed = -this.#jumpSpeed;
