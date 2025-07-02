@@ -1,3 +1,7 @@
+import { VecUtils } from "./VecUtils.js"
+import { StateUtils } from "./StateUtils.js";
+
+
 class PhysicsOfPlayer {
 
   #playerXSpeed = 7;
@@ -13,21 +17,23 @@ class PhysicsOfPlayer {
       xSpeed += this.#playerXSpeed
     };
 
-    let updatedPos = pos.copy()
-    const movedX = updatedPos.plus(new Vec(xSpeed * time, 0));
-    if ( StateUtils.touches( state, movedX, size, "wall") ) {
+    let updatedPos = VecUtils.copy(pos)
+    const movedX = VecUtils.plus( updatedPos, { x: xSpeed * time, y: 0 });
+    if ( !StateUtils.touches( state, movedX, size, "wall") ) {
       updatedPos = movedX;
     }
   
     let ySpeed = speed.y + time * this.#gravity;
-    const movedY = updatedPos.plus(new Vec(0, ySpeed * time));
-    if ( StateUtils.touches( state, movedY, size, "wall") ) {
+    const movedY = VecUtils.plus( updatedPos, { x: 0, y: ySpeed * time } );
+    if ( !StateUtils.touches( state, movedY, size, "wall") ) {
       updatedPos = movedY;
     } else if (keys.includes("ArrowUp") && ySpeed > 0) {
       ySpeed = -this.#jumpSpeed;
     } else {
       ySpeed = 0;
     }
-    return { pos: updatedPos, speed: new Vec(xSpeed, ySpeed)};
+    return { pos: updatedPos, speed: { x: xSpeed, y: ySpeed} };
   }
 }
+
+export { PhysicsOfPlayer }

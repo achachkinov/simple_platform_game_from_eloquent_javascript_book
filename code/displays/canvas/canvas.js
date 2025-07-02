@@ -1,3 +1,5 @@
+import { VecUtils } from "../../gameModel/actors/utils/VecUtils.js";
+
 const spritesOnImage = {
   "lava": {
     "x": 20,
@@ -84,10 +86,10 @@ const spritesOnImageOfPlayer = {
 }
 
 const otherSprites = document.createElement("img");
-otherSprites.src = "img/sprites.png";
+otherSprites.src = "code/displays/canvas/img/sprites.png";
 
 const playerSprites = document.createElement("img");
-playerSprites.src = "img/CJ.png";
+playerSprites.src = "code/displays/canvas/img/CJ.png";
 
 const results = [
   {name: "Satisfied", count: 1043, color: "lightblue"},
@@ -125,7 +127,7 @@ class CanvasDisplay {
     const view = this.viewport
     const margin = view.width / 3;
     const player = state.player;
-    const center = player.pos.plus(player.size.times(0.5));
+    const center = VecUtils.plus( player.pos, VecUtils.times(player.size, 0.5));
   
     if (center.x < view.left + margin) {
       view.left = Math.max(center.x - margin, 0);
@@ -250,3 +252,5 @@ class ContextWrapper {
     return this.canvas.width/this.scale
   }
 }
+
+export { CanvasDisplay }

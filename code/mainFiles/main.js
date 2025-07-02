@@ -1,3 +1,12 @@
+import { TrackerKeys } from "../gameModel/trackersKeys/TrackerKeys.js";
+import { LevelParser } from "../gameModel/businessStuff/LevelParser.js";
+import { LevelRunner } from "../gameModel/businessStuff/LevelRunner.js";
+import { CanvasDisplay } from "../displays/canvas/canvas.js";
+import { Player } from "../gameModel/actors/Player.js";
+import { Lava } from "../gameModel/actors/Lava.js";
+import { Coin } from "../gameModel/actors/Coin.js";
+import { GAME_LEVELS } from "../levels/levels.js";
+ 
 const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
 const ACTOR_CLASSES = [ Player, Lava, Coin ]
 
@@ -11,4 +20,6 @@ async function runGame(plans, Display) {
   }
   console.log("You've won!");
 }
+
+runGame(GAME_LEVELS, CanvasDisplay);
   

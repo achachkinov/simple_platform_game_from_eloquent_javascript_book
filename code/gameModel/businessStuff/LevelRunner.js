@@ -1,3 +1,5 @@
+import { State } from "./State.js";
+
 class LevelRunner {
   #display
   #state
@@ -49,3 +51,5 @@ class LevelRunner {
     }
   }
 }
+
+export { LevelRunner }

@@ -6,8 +6,8 @@ class LevelParser {
   }
   #actorSymbols = {}
 
-  constructor() {
-    this.#generateActorSymbols()
+  constructor( actorClasses ) {
+    this.#generateActorSymbols( actorClasses )
   }
 
   #generateActorSymbols( actorClasses ) {
@@ -30,7 +30,7 @@ class LevelParser {
         if ( this.#staticSymbols[ ch ] ) {
           return this.#staticSymbols[ ch ]
         } else if ( this.#actorSymbols[ ch ] ) {
-          let pos = new Vec(x, y);
+          let pos = { x, y };
           startActors.push(this.#actorSymbols[ ch ].create(pos, ch));
           return "empty";
         }
@@ -42,3 +42,4 @@ class LevelParser {
   }
 }
   
+export { LevelParser }

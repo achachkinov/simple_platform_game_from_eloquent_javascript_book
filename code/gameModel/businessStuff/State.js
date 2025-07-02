@@ -37,4 +37,6 @@ class State {
           actor1.pos.y < actor2.pos.y + actor2.size.y;
   }
 }
+
+export { State }
   

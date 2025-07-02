@@ -17,3 +17,5 @@ class StateUtils {
     return false;
   };
 }
+
+export { StateUtils }
