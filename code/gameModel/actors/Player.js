@@ -23,33 +23,32 @@ class Player {
   }
 
   update(time, state, keys) {
-    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this.pos, this.speed, this.size, time, state, keys);
+    const playerStruct = this.getStruct()
+    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( playerStruct, time, state, keys, this);
     this.pos = updatedPosAndSpeed.pos;
     this.speed = updatedPosAndSpeed.speed;
-    return this
+    return state
   };
 
-  updateState( state ) {
-    if ( StateUtils.touches( state, this.pos, this.size, "lava")) {
-      if ( StateUtils.players(state).length == 1 ) {
-        state.status = "lost";
-      } else {
-        state.actors = state.actors.filter(a => a != this);
-      }
-    }
-    return state;
-  }
-
-  collide(state, actor ) {
+  collide( state, actor ) {
     if ( actor.type == "player") {
-      const collidedPosAndSpeed = this.physics.getCollidedPosAndSpeed( this.pos, this.speed, this.size, state, actor.pos, actor.speed, actor.size );
+      const playerStruct = this.getStruct()
+      const actorStruct = actor.getStruct()
+      const collidedPosAndSpeed = this.physics.getCollidedPosAndSpeed( playerStruct, actorStruct, state )
       this.pos = collidedPosAndSpeed.pos;
       this.speed = collidedPosAndSpeed.speed;
-      return state
-    } else {
-      return state
     }
+    return state
   };
+
+  getStruct() {
+    const struct = { 
+      pos: this.pos, 
+      speed: this.speed, 
+      size: this.size 
+    }
+    return struct
+  }
 }
 Player.prototype.size = { x: 0.8, y: 1.5 }
 Player.prototype.type = "player"

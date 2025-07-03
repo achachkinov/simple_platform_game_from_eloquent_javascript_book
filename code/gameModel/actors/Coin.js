@@ -19,18 +19,14 @@ class Coin {
     return new Coin(basePos, basePos, Coin.START_WOOBLE);
   }
 
-  update(time) {
+  update(time, state) {
     const wobble = this.wobble + time * Coin.WOBBLE_SPEED;
     const wobblePos = Math.sin(wobble) * Coin.WOBBLE_DIST;
     const pos = VecUtils.plus( this.basePos, { x: 0, y: wobblePos } )
     this.pos = pos;
     this.wobble = wobble;
-    return this
-  };
-
-  updateState( state ) {
     return state
-  }
+  };
 
   collide(state, actor) {
     if ( actor.type == "player" ) {

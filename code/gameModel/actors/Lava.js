@@ -29,13 +29,8 @@ class Lava {
     } else {
       this.speed = VecUtils.times( this.speed, -1 )
     }
-    return this
-  };
-
-  updateState( state ) {
     return state
-  }
-
+  };
   collide(state, actor) {
     if ( actor.type == "player" ) {
       const players = StateUtils.players( state )

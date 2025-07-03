@@ -10,21 +10,26 @@ class StateUpdater {
     }
 
     update(state, time, keys) {
-        const actors = state.actors.map(actor => actor.update(time, state, keys));
-        let newState = { level: state.level, actors, status: state.status }
+        const actors = [...state.actors];
+        for (const actor of actors) {
+            if (!state.actors.includes(actor)) continue;
 
-        if (newState.status != "playing") return newState;
+            state = actor.update(time, state, keys);
+            state = this.#collideWithOtherActors(actor, state);
+        }
+        return state;
+    };
 
-        for ( let actor1 of newState.actors ) {
-        newState = actor1.updateState( newState )
-        for (let actor2 of actors) {
-            if ( actor1 != actor2 && StateUtils.isOverlapActors(actor1, actor2)) {
-            newState = actor2.collide(newState, actor1);
+    #collideWithOtherActors(actor1, state) {
+        if (state.status === "playing") {
+            for (const actor2 of [...state.actors]) {
+                if (actor1 !== actor2 && StateUtils.isOverlapActors(actor1, actor2)) {
+                    state = actor2.collide(state, actor1);
+                }
             }
         }
-        }
-        return newState;
-    };
+        return state;
+    }
 }
 
 export { StateUpdater }
