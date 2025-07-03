@@ -6,6 +6,7 @@ import { Player } from "../gameModel/actors/Player.js";
 import { Lava } from "../gameModel/actors/Lava.js";
 import { Coin } from "../gameModel/actors/Coin.js";
 import { GAME_LEVELS } from "../levels/levels.js";
+import { OUR_GAME_LEVELS } from "../levels/ourLevels.js";
  
 const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
 const ACTOR_CLASSES = [ Player, Lava, Coin ]
@@ -21,5 +22,5 @@ async function runGame(plans, Display) {
   console.log("You've won!");
 }
 
-runGame(GAME_LEVELS, CanvasDisplay);
+runGame(OUR_GAME_LEVELS, CanvasDisplay);
   

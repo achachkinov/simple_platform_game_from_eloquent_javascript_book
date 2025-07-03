@@ -13,18 +13,22 @@ class State {
     return this.actors.find(a => a.type == "player");
   }
 
+  get players() {
+    return this.actors.filter(a => a.type == "player");
+  }
+
   update(time, keys) {
     let actors = this.actors.map(actor => actor.update(time, this, keys));
     let newState = new State(this.level, actors, this.status);
   
     if (newState.status != "playing") return newState;
   
-    let player = newState.player;
-    newState = player.updateState( newState )
-  
-    for (let actor of actors) {
-      if (actor != player && this.#overlap(actor, player)) {
-        newState = actor.collide(newState);
+    for ( let actor1 of newState.actors ) {
+      newState = actor1.updateState( newState )
+      for (let actor2 of actors) {
+        if ( actor1 != actor2 && this.#overlap(actor1, actor2)) {
+          newState = actor2.collide(newState, actor1);
+        }
       }
     }
     return newState;

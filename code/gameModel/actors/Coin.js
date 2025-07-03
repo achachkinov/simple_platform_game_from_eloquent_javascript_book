@@ -20,18 +20,28 @@ class Coin {
     return new Coin(basePos, basePos, Coin.START_WOOBLE);
   }
 
-  collide(state) {
-    const filtered = state.actors.filter(a => a != this);
-    let status = state.status;
-    if (!filtered.some(a => a.type == "coin")) status = "won";
-    return new State(state.level, filtered, status);
-  };
-
   update(time) {
     const wobble = this.wobble + time * Coin.WOBBLE_SPEED;
     const wobblePos = Math.sin(wobble) * Coin.WOBBLE_DIST;
     const pos = VecUtils.plus( this.basePos, { x: 0, y: wobblePos } )
-    return new Coin(pos, this.basePos, wobble);
+    this.pos = pos;
+    this.wobble = wobble;
+    return this
+  };
+
+  updateState( state ) {
+    return state
+  }
+
+  collide(state, actor) {
+    if ( actor.type == "player" ) {
+      const filtered = state.actors.filter(a => a != this);
+      let status = state.status;
+      if (!filtered.some(a => a.type == "coin")) status = "won";
+      return new State(state.level, filtered, status);
+    } else {
+      return state
+    }
   };
 }
 Coin.prototype.size = { x: 0.6, y: 0.6 }

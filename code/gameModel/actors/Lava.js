@@ -21,18 +21,32 @@ class Lava {
     }
   }
 
-  collide(state) {
-    return new State(state.level, state.actors, "lost");
-  };
-
   update(time, state) {
     let newPos = VecUtils.plus( this.pos, VecUtils.times(this.speed, time));
-    if ( StateUtils.touches( state, newPos, this.size, "wall") ) {
-      return new Lava(newPos, this.speed, this.reset);
+    if ( !StateUtils.touches( state, newPos, this.size, "wall") ) {
+      this.pos = newPos
     } else if (this.reset) {
-      return new Lava(this.reset, this.speed, this.reset);
+      this.pos = this.reset;
     } else {
-      return new Lava(this.pos, VecUtils.times( this.speed, -1 ));
+      this.speed = VecUtils.times( this.speed, -1 )
+    }
+    return this
+  };
+
+  updateState( state ) {
+    return state
+  }
+
+  collide(state, actor) {
+    if ( actor.type == "player" ) {
+      const players = state.players
+      if ( players.length == 1 ) {
+        return new State(state.level, state.actors, "lost");
+      } else {
+        return new State(state.level, state.actors.filter(a => a != actor), state.status);
+      }
+    } else {
+      return state
     }
   };
 }
