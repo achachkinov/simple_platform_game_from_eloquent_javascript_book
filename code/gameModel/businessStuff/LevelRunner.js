@@ -1,4 +1,4 @@
-import { State } from "./State.js";
+import { StateUpdater } from "./StateUpdater.js"
 
 class LevelRunner {
   #display
@@ -7,6 +7,7 @@ class LevelRunner {
   //#lastTime
   #trackerKeys
   #resolve
+  #stateUpdater
 
   constructor( level, trackerKeys, Display ) {
     this.#trackerKeys = trackerKeys
@@ -16,7 +17,8 @@ class LevelRunner {
 
   #initState( level, Display ) {
     this.#display = new Display(document.body, level);
-    this.#state = State.start(level);
+    this.#stateUpdater = new StateUpdater();
+    this.#state = this.#stateUpdater.createState(level);
     this.#ending = 1;
   }
   
@@ -37,7 +39,7 @@ class LevelRunner {
   }
 
   #frameFunct( time ) {
-    this.#state = this.#state.update(time, this.#trackerKeys.currentlyPressedKeys);
+    this.#state = this.#stateUpdater.update(this.#state, time, this.#trackerKeys.currentlyPressedKeys);
     this.#display.syncState(this.#state);
     if (this.#state.status == "playing") {
       return true;

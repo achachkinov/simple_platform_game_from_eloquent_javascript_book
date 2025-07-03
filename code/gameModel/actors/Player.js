@@ -1,7 +1,6 @@
 import { PhysicsOfPlayer } from "./utils/PhysicsOfPlayer.js";
 import { VecUtils } from "./utils/VecUtils.js"
 import { StateUtils } from "./utils/StateUtils.js"
-import { State } from "../businessStuff/State.js"
 
 
 class Player {
@@ -32,14 +31,13 @@ class Player {
 
   updateState( state ) {
     if ( StateUtils.touches( state, this.pos, this.size, "lava")) {
-      if ( state.players.length == 1 ) {
-        return new State(state.level, state.actors, "lost");
+      if ( StateUtils.players(state).length == 1 ) {
+        state.status = "lost";
       } else {
-        return new State(state.level, state.actors.filter(a => a != this), state.status);
+        state.actors = state.actors.filter(a => a != this);
       }
-    } else {
-      return state;
     }
+    return state;
   }
 
   collide(state, actor ) {

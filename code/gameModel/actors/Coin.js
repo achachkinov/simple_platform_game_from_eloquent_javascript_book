@@ -1,5 +1,4 @@
 import { VecUtils } from "./utils/VecUtils.js"
-import { State } from "../businessStuff/State.js";
 
 class Coin {
   static SYMBOLS = ["o"]
@@ -38,10 +37,10 @@ class Coin {
       const filtered = state.actors.filter(a => a != this);
       let status = state.status;
       if (!filtered.some(a => a.type == "coin")) status = "won";
-      return new State(state.level, filtered, status);
-    } else {
-      return state
+      state.actors = filtered;
+      state.status = status;
     }
+    return state
   };
 }
 Coin.prototype.size = { x: 0.6, y: 0.6 }

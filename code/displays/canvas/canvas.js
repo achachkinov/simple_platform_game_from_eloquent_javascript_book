@@ -1,4 +1,5 @@
 import { VecUtils } from "../../gameModel/actors/utils/VecUtils.js";
+import { StateUtils } from "../../gameModel/actors/utils/StateUtils.js"
 
 const spritesOnImage = {
   "lava": {
@@ -126,7 +127,7 @@ class CanvasDisplay {
   updateViewport(state) {
     const view = this.viewport
     const margin = view.width / 3;
-    const player = state.player;
+    const player = StateUtils.player(state);
     const center = VecUtils.plus( player.pos, VecUtils.times(player.size, 0.5));
   
     if (center.x < view.left + margin) {

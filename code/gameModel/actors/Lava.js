@@ -1,5 +1,4 @@
 import { VecUtils } from "./utils/VecUtils.js"
-import { State } from "../businessStuff/State.js";
 import { StateUtils } from "./utils/StateUtils.js"
 
 class Lava {
@@ -39,15 +38,14 @@ class Lava {
 
   collide(state, actor) {
     if ( actor.type == "player" ) {
-      const players = state.players
+      const players = StateUtils.players( state )
       if ( players.length == 1 ) {
-        return new State(state.level, state.actors, "lost");
+        state.status = "lost";
       } else {
-        return new State(state.level, state.actors.filter(a => a != actor), state.status);
+        state.actors = state.actors.filter(a => a != actor);
       }
-    } else {
-      return state
     }
+    return state
   };
 }
 Lava.prototype.size = { x: 1, y: 1 }
