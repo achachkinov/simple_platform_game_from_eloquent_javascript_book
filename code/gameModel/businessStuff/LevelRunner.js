@@ -8,14 +8,14 @@ class LevelRunner {
   #resolve
   #stateUpdater
 
-  constructor( level, trackerKeys, Display ) {
-    this.#trackerKeys = trackerKeys
+  constructor( level, trackerKeys, display ) {
+    this.#trackerKeys = trackerKeys;
     this.lastTime = null;
-    this.#initState( level, Display )
+    this.#initState( level, display )
   }
 
-  #initState( level, Display ) {
-    this.#display = new Display(document.body, level);
+  #initState( level, display ) {
+    this.#display = display;
     this.#stateUpdater = new StateUpdater();
     this.#state = this.#stateUpdater.createState(level);
     this.#ending = 1;

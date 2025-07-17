@@ -1,40 +1,38 @@
+import { SpriteUtil } from "../utils/SpriteUtils.js";
+
 class PlayerDrawer {
-    constructor() {
+  constructor() {
+    this.flipPlayer = false;
+    this.status
+    this.#initializeSprites();
+  }
 
+  #initializeSprites() {
+    this.sprite = SpriteUtil.createDefaultSprite("");
+  }
+
+  draw(state, view, actor, cw) {
+    let x = actor.pos.x;
+    let y = actor.pos.y;
+    const playerXOverlap = 0.2;
+    x -= playerXOverlap;
+    if (actor.speed.x != 0) {
+      this.flipPlayer = actor.speed.x < 0;
     }
 
-    draw() {
-        let width = actor.size.x;
-        let height = actor.size.y;
-        let x = (actor.pos.x - this.viewport.left);
-        let y = (actor.pos.y - this.viewport.top);
-        if (actor.type == "player") {
-          this.drawPlayer(actor, x, y, width, height);
-        } else {
-          const sprite = spritesOnImage[ actor.type ]
-          this.cw.drawSprite( otherSprites, sprite, x, y )
-        }
+    let tile = "rest";
+    if (actor.speed.y != 0) {
+      tile = "jump";
+    } else if (actor.speed.x != 0) {
+      tile = "move" + Math.floor(Date.now() / 60) % 8;
     }
+    const sprite = this.#getSprite()
+    cw.drawSprite( this.sprite, view )
+  }
+  #getSprite() {
 
-    drawPlayer(player, x, y) {
-        const playerXOverlap = 0.2;
-        x -= playerXOverlap;
-        if (player.speed.x != 0) {
-          this.flipPlayer = player.speed.x < 0;
-        }
-    
-        let tile = "rest";
-        if (player.speed.y != 0) {
-          tile = "jump";
-        } else if (player.speed.x != 0) {
-          tile = "move" + Math.floor(Date.now() / 60) % 8;
-        }
-        const sprite = spritesOnImageOfPlayer[ tile ]
-    
-        if ( this.flipPlayer ) {
-          this.cw.drawFlipedSprite( playerSprites, sprite, x, y );
-        } else {
-          this.cw.drawSprite( playerSprites, sprite, x, y );
-        }
-      };
+  }
 }
+PlayerDrawer.prototype.type = "player"
+
+export { PlayerDrawer }

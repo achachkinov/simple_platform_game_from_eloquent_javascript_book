@@ -1,18 +1,16 @@
+import { SpriteUtil } from "../utils/SpriteUtils.js";
+
 class CoinDrawer {
-    constructor() {
+  constructor() {
+    this.sprite = SpriteUtil.createDefaultSprite("coin");
+  }
 
-    }
-
-    draw() {
-        let width = actor.size.x;
-        let height = actor.size.y;
-        let x = (actor.pos.x - this.viewport.left);
-        let y = (actor.pos.y - this.viewport.top);
-        if (actor.type == "player") {
-          this.drawPlayer(actor, x, y, width, height);
-        } else {
-          const sprite = spritesOnImage[ actor.type ]
-          this.cw.drawSprite( otherSprites, sprite, x, y )
-        }
-    }
+  draw(state, viewport, actor, cw ) {
+    this.sprite.position.x = actor.pos.x;
+    this.sprite.position.y = actor.pos.y;
+    cw.drawSprite( this.sprite, view )
+  }
 }
+CoinDrawer.prototype.type = "coin"
+
+export { CoinDrawer }
