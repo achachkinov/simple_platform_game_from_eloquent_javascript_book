@@ -4,7 +4,7 @@ const playerSprites = document.createElement("img");
 otherSprites.src = "code/displays/canvas/img/sprites.png";
 playerSprites.src = "code/displays/canvas/img/CJ.png";
 
-const spriteStruct = {
+const spriteImageStruct = {
   "_default": {
     "src": otherSprites,
     "x": 30,
@@ -105,5 +105,5 @@ const spriteStruct = {
   }
 }
     
-export { spriteStruct }
+export { spriteImageStruct }
       

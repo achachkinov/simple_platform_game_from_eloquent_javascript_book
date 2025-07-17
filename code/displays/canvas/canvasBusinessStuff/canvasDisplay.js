@@ -1,22 +1,28 @@
 import { VecUtils } from "../../../gameModel/actors/utils/VecUtils.js";
 import { ContextWrapper } from "./contextWrapper.js";
-
+import { PlayerView } from "../Views/PlayerView.js"
+import { MinimapView } from "../Views/MinimapView.js"
 
 
 
 class CanvasDisplay {
 
   #cw
-  #viewPort
+  #views
   #backgroundDrawers
   #actorDrawersClasses = {}
   #actorDrawers = new WeakMap();
 
-  constructor(parent, level, viewport, backgroundDrawers, actorDrawers) {
+  constructor(parent, level, backgroundDrawers, actorDrawers) {
     this.#cw = new ContextWrapper( parent, level )
-    this.#viewPort = viewport
+    this.#initializateViews();
     this.#initializeBackgroundDrawers( backgroundDrawers );
     this.#initializeActorDrawers( actorDrawers );
+  }
+  #initializateViews() {
+    this.#views = {};
+    this.#views[ "main" ] = new PlayerView( this.#cw );
+    this.#views[ "minimap" ] = new MinimapView( this.#cw );
   }
   #initializeBackgroundDrawers( backgroundDrawers ) {
     this.#backgroundDrawers = []
@@ -42,12 +48,14 @@ class CanvasDisplay {
   }
 
   #updateViewport(state) {
-    this.#viewPort.update( state );
+    for ( let view of Object.values( this.#views )) {
+      view.update( state );
+    }
   };
 
   #drawBackgroundDrawers( state ) {
     for (let drawer of this.#backgroundDrawers) {
-      drawer.draw( state, this.#viewPort );
+      drawer.draw( state, this.#views, this.#cw );
     }
   }
 
@@ -56,13 +64,13 @@ class CanvasDisplay {
       let drawer = this.#actorDrawers.get(actor);
       if (!drawer) {
         let type = actor.type
-        if (!(type in this.actorDrawers)) {
+        if (this.#actorDrawers[type]) {
           type = "_default";
         }
         let Drawer = this.#actorDrawersClasses[ type ]
         drawer = new Drawer( actor, state );
       }
-      drawer.draw(state, this.#viewPort, actor, this.#cw);
+      drawer.draw(state, this.#views, actor, this.#cw);
     }
   };  
 }

@@ -1,4 +1,4 @@
-class SpriteUtil {
+class SpriteUtils {
     
     #name
     #flipped = false
@@ -6,13 +6,14 @@ class SpriteUtil {
     #rotateAngle = 0
 
     static createDefaultSprite( name ) {
-        sprite = {
+        const sprite = {
             name: name,
             flipped: false,
             position: { x: 0, y: 0 },
             rotateAngle: 0,
             scale: { x: 1, y: 1 }
         }
+        return sprite
     }
 }
 

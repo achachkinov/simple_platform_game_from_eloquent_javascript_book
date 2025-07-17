@@ -1,11 +1,14 @@
-import { StateUtils } from "../../../../gameModel/actors/utils/StateUtils.js"
+import { StateUtils } from "../../../gameModel/actors/utils/StateUtils.js"
+import { VecUtils } from "../../../gameModel/actors/utils/VecUtils.js"
 
-class ViewPort {
+class MinimapView {
   constructor( cw ) {
     this.left = 0
     this.top = 0
     this.width = cw.width
     this.height = cw.height
+    this.scaleWidth = 0.2;
+    this.scaleHeight = 0.2;
   }
 
   update( state ) {
@@ -24,6 +27,15 @@ class ViewPort {
       this.top = Math.min(center.y + margin - this.height, state.level.height - this.height);
     }
   }
+
+  getViewStruct() {
+    return { 
+      left: this.left,
+      top: this.top,
+      width: this.width,
+      height: this.height  
+    }
+  }
 }
 
-export { ViewPort } 
+export { MinimapView } 

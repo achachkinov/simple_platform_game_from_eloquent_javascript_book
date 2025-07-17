@@ -1,14 +1,18 @@
-import { SpriteUtil } from "../utils/SpriteUtils.js";
+import { SpriteUtils } from "../../drawers/utils/SpriteUtils.js";
 
 class CoinDrawer {
+
+  static type = "coin"
+
   constructor() {
-    this.sprite = SpriteUtil.createDefaultSprite("coin");
+    this.sprite = SpriteUtils.createDefaultSprite("coin");
   }
 
-  draw(state, viewport, actor, cw ) {
+  draw(state, views, actor, cw ) {
     this.sprite.position.x = actor.pos.x;
     this.sprite.position.y = actor.pos.y;
-    cw.drawSprite( this.sprite, view )
+    cw.drawSprite( this.sprite, views["main"] )
+    cw.drawSprite( this.sprite, views[ "minimap" ] )
   }
 }
 CoinDrawer.prototype.type = "coin"

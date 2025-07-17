@@ -1,14 +1,18 @@
-import { SpriteUtil } from "../utils/SpriteUtils.js";
+import { SpriteUtils } from "../../drawers/utils/SpriteUtils.js";
 
 class LavaDrawer {
+
+  static type = "lava"
+
   constructor() {
-    this.sprite = SpriteUtil.createDefaultSprite("lava");
+    this.sprite = SpriteUtils.createDefaultSprite("lava");
   }
 
-  draw(state, view, actor, cw ) {
+  draw(state, views, actor, cw ) {
     this.sprite.position.x = actor.pos.x;
     this.sprite.position.y = actor.pos.y;
-    cw.drawSprite( this.sprite, view )
+    cw.drawSprite( this.sprite, views["main"] )
+    cw.drawSprite( this.sprite, views[ "minimap" ] )
   }
 }
 LavaDrawer.prototype.type = "lava"

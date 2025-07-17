@@ -1,4 +1,4 @@
-import { spriteStruct } from "../img/spritesImageStruct"
+import { spriteImageStruct } from "../img/spritesImageStruct.js"
 
 class ContextWrapper {
   constructor( parent, level ) {
@@ -19,14 +19,34 @@ class ContextWrapper {
     this.canvas.remove()
   }
 
-  drawSprite( sprite ) {
-    const spriteImageInfo = spriteStruct[sprite.name];
+  drawSprite( sprite, view ) {
+    const spriteImageInfo = spriteImageStruct[sprite.name];
+    const totalPosition = this.#calculatePositionByView( sprite, view );
     if ( sprite.flip ) {
-        this.#flipHorizontally( screenX*this.scale + sprite.width*(this.scale/20) / 2);
+      this.cx.save();
+      this.#flipHorizontally( totalPosition.x*this.scale + spriteImageInfo.width*view.scaleWidth*(this.scale/20) / 2);
     }
-    this.cx.drawImage(spriteImageInfo.src, spriteImageInfo.x, spriteImageInfo.y, spriteImageInfo.width, spriteImageInfo.height, sprite.position.x*this.scale, sprite.position.y*this.scale, spriteImageInfo.width*this.scale/20, spriteImageInfo.height*this.scale/20);
+    this.cx.drawImage(
+      spriteImageInfo.src, 
+      spriteImageInfo.x, 
+      spriteImageInfo.y, 
+      spriteImageInfo.width, 
+      spriteImageInfo.height, 
+      totalPosition.x*this.scale, 
+      totalPosition.y*this.scale, 
+      spriteImageInfo.width*totalPosition.width*this.scale/20, 
+      spriteImageInfo.height*totalPosition.height*this.scale/20);
+
     if ( sprite.flip ) {
-        this.cx.restore();
+      this.cx.restore();
+    }
+  }
+  #calculatePositionByView( sprite, view ) {
+    return { 
+      x: (sprite.position.x - view.left)*view.scaleWidth,
+      y: (sprite.position.y - view.top)*view.scaleHeight,
+      width: view.scaleWidth,
+      height: view.scaleHeight
     }
   }
   #flipHorizontally( around ) {
