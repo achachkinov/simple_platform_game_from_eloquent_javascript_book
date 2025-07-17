@@ -1,6 +1,5 @@
 import { PhysicsOfPlayer } from "./utils/PhysicsOfPlayer.js";
 import { VecUtils } from "./utils/VecUtils.js"
-import { StateUtils } from "./utils/StateUtils.js"
 
 
 class Player {
@@ -23,21 +22,16 @@ class Player {
   }
 
   update(time, state, keys) {
-    const playerStruct = this.getStruct()
-    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( playerStruct, time, state, keys, this);
+    const updatedPosAndSpeed = this.physics.getUpdatedPosAndSpeed( this, time, state, keys );
     this.pos = updatedPosAndSpeed.pos;
     this.speed = updatedPosAndSpeed.speed;
     return state
   };
 
   collide( state, actor ) {
-    if ( actor.type == "player") {
-      const playerStruct = this.getStruct()
-      const actorStruct = actor.getStruct()
-      const collidedPosAndSpeed = this.physics.getCollidedPosAndSpeed( playerStruct, actorStruct, state )
-      this.pos = collidedPosAndSpeed.pos;
-      this.speed = collidedPosAndSpeed.speed;
-    }
+    const collidedPosAndSpeed = this.physics.getCollidedPosAndSpeed( this, actor, state )
+    this.pos = collidedPosAndSpeed.pos;
+    this.speed = collidedPosAndSpeed.speed;
     return state
   };
 

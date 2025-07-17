@@ -3,7 +3,7 @@ import { VecUtils } from "./utils/VecUtils.js"
 class Coin {
   static SYMBOLS = ["o"]
   static WOBBLE_SPEED = 8;
-  static WOBBLE_DIST = 0.07;
+  static WOBBLE_DIST = 0.7;
 
   static POS_DEVIATION = { x: 0.2, y: 0.1 };
   static START_WOOBLE = Math.random() * Math.PI * 2
@@ -20,24 +20,35 @@ class Coin {
   }
 
   update(time, state) {
-    const wobble = this.wobble + time * Coin.WOBBLE_SPEED;
-    const wobblePos = Math.sin(wobble) * Coin.WOBBLE_DIST;
-    const pos = VecUtils.plus( this.basePos, { x: 0, y: wobblePos } )
-    this.pos = pos;
-    this.wobble = wobble;
+    this.#updateWobble(time)
+    this.#updatepos()
     return state
   };
+  #updateWobble(time) {
+    this.wobble += time * Coin.WOBBLE_SPEED;
+  }
+  #updatepos() {
+    const wobblePos = Math.sin(this.wobble)*Coin.WOBBLE_DIST;
+    const posDiff = { x: 0, y: wobblePos }
+    this.pos = VecUtils.plus( this.basePos, posDiff )
+  }
 
   collide(state, actor) {
     if ( actor.type == "player" ) {
-      const filtered = state.actors.filter(a => a != this);
-      let status = state.status;
-      if (!filtered.some(a => a.type == "coin")) status = "won";
-      state.actors = filtered;
-      state.status = status;
+      this.#collideWithPlayer( state )
     }
     return state
   };
+  #collideWithPlayer( state ) {
+    state.actors = state.actors.filter(a => a != this);
+    state.status = this.#calculateStatus( state )
+  }
+  #calculateStatus( state ) {
+    if (!state.actors.some(a => a.type == "coin")) {
+      return "won"
+    }
+    return state.status
+  }
 }
 Coin.prototype.size = { x: 0.6, y: 0.6 }
 Coin.prototype.type = "coin";

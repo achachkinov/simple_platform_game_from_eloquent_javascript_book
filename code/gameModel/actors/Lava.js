@@ -21,8 +21,8 @@ class Lava {
   }
 
   update(time, state) {
-    let newPos = VecUtils.plus( this.pos, VecUtils.times(this.speed, time));
-    if ( !StateUtils.touches( state, newPos, this.size, "wall") ) {
+    const newPos = this.#calculateNewPosition( time )
+    if ( this.#isNotTouchWall( state, newPos ) ) {
       this.pos = newPos
     } else if (this.reset) {
       this.pos = this.reset;
@@ -31,17 +31,27 @@ class Lava {
     }
     return state
   };
+  #calculateNewPosition( time ) {
+    return VecUtils.plus( this.pos, VecUtils.times(this.speed, time));
+  }
+  #isNotTouchWall( state, newPos ) {
+    return !StateUtils.touches( state, newPos, this.size, "wall")
+  }
+
   collide(state, actor) {
     if ( actor.type == "player" ) {
-      const players = StateUtils.players( state )
-      if ( players.length == 1 ) {
-        state.status = "lost";
-      } else {
-        state.actors = state.actors.filter(a => a != actor);
-      }
+      this.#collideWithPlayer( state, actor )
     }
     return state
   };
+  #collideWithPlayer( state, player ) {
+    const players = StateUtils.players( state )
+    if ( players.length == 1 ) {
+      state.status = "lost";
+    } else {
+      state.actors = state.actors.filter(a => a != player);
+    }
+  }
 }
 Lava.prototype.size = { x: 1, y: 1 }
 Lava.prototype.type = "lava"

@@ -4,7 +4,6 @@ class LevelRunner {
   #display
   #state
   #ending
-  //#lastTime
   #trackerKeys
   #resolve
   #stateUpdater
