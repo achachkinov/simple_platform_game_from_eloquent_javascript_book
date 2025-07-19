@@ -13,12 +13,16 @@ import { LavaDrawer } from "../displays/canvas/drawers/actorDrawers/LavaDrawer.j
 import { CoinDrawer } from "../displays/canvas/drawers/actorDrawers/CoinDrawer.js";
 import { PlayerDrawer } from "../displays/canvas/drawers/actorDrawers/PlayerDrawer.js";
 import { DefaultDrawer } from "../displays/canvas/drawers/actorDrawers/DefaultDrawer.js";
+import { PlayerView } from "../displays/canvas/views/PlayerView.js"
+import { MinimapView } from "../displays/canvas/views/MinimapView.js"
+
  
 const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
 const ACTOR_CLASSES = [ Player, Lava, Coin ]
 
 const BACKGROUND_DRAWERS = [ SkyDrawer, BackgroundDrawer ]
 const ACTOR_DRAWERS = [ PlayerDrawer, LavaDrawer, CoinDrawer, DefaultDrawer ]
+const VIEWS = [ PlayerView, MinimapView ]
 
 async function runGame(plans, Display) {
   const tracerkKeys = new TrackerKeys( TRACK_KEYS );
@@ -26,7 +30,7 @@ async function runGame(plans, Display) {
   let display 
   for (let level = 0; level < plans.length;) {
     const parseLevel = levelParser.parse(plans[level])
-    display = new Display( document.body, parseLevel, BACKGROUND_DRAWERS, ACTOR_DRAWERS);
+    display = new Display( document.body, parseLevel, VIEWS, BACKGROUND_DRAWERS, ACTOR_DRAWERS);
     const levelRunner = new LevelRunner( parseLevel, tracerkKeys, display);
     let status = await levelRunner.run()
     if (status == "won") level++;

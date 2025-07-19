@@ -1,109 +1,97 @@
 const otherSprites = document.createElement("img");
 const playerSprites = document.createElement("img");
+const defaultSprites = document.createElement("img");
 
 otherSprites.src = "code/displays/canvas/img/sprites.png";
 playerSprites.src = "code/displays/canvas/img/CJ.png";
+defaultSprites.src = "code/displays/canvas/img/default.png";
 
 const spriteImageStruct = {
   "_default": {
-    "src": otherSprites,
-    "x": 30,
-    "y": 0,
-    "width": 20,
-    "height": 20
+    "src": defaultSprites,
+    "position": { x: 0, y: 0 },
+    "size": { x: 20, y: 20 },
+    "origin": { x: 10, y: 10 }
   },
   "lava": {
     "src": otherSprites,
-    "x": 20,
-    "y": 0,
-    "width": 20,
-    "height": 20
+    "position": { x: 20, y: 0 },
+    "size": { x: 20, y: 20 },
+    "origin": { x: 10, y: 10 }
   },
-  "wall" : {
+  "wall": {
     "src": otherSprites,
-    "x": 0,
-    "y": 0,
-    "width": 20,
-    "height": 20
+    "position": { x: 0, y: 0 },
+    "size": { x: 20, y: 20 },
+    "origin": { x: 10, y: 10 }
   },
-  "coin" : {
+  "coin": {
     "src": otherSprites,
-    "x": 40,
-    "y": 0,
-    "width": 20,
-    "height": 20
+    "position": { x: 40, y: 0 },
+    "size": { x: 20, y: 20 },
+    "origin": { x: 10, y: 10 }
   },
   "move0": {
     "src": playerSprites,
-    "x": 0,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 0, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move1" : {
+  "move1": {
     "src": playerSprites,
-    "x": 24,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 24, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move2" : {
+  "move2": {
     "src": playerSprites,
-    "x": 48,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 48, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move3" : {
+  "move3": {
     "src": playerSprites,
-    "x": 72,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 72, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move4" : {
+  "move4": {
     "src": playerSprites,
-    "x": 96,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 96, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move5" : {
+  "move5": {
     "src": playerSprites,
-    "x": 120,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 120, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move6" : {
+  "move6": {
     "src": playerSprites,
-    "x": 144,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 144, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "move7" : {
+  "move7": {
     "src": playerSprites,
-    "x": 168,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 168, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "rest" : {
+  "rest": {
     "src": playerSprites,
-    "x": 192,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 192, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   },
-  "jump" : {
+  "jump": {
     "src": playerSprites,
-    "x": 216,
-    "y": 0,
-    "width": 24,
-    "height": 30
+    "position": { x: 216, y: 0 },
+    "size": { x: 24, y: 30 },
+    "origin": { x: 12, y: 15 }
   }
-}
+};
     
 export { spriteImageStruct }
       

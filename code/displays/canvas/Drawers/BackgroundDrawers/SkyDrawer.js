@@ -1,15 +1,17 @@
 class SkyDrawer {
   constructor() {
-
+    this.wonColor = "rgb(68, 191, 255)";
+    this.lostColor = "rgb(44, 136, 214)";
+    this.defaultColor = "rgb(52, 166, 251)";
   }
 
   draw(state, views, cw) {
     if (state.status == "won") {
-      cw.clearByColor("rgb(68, 191, 255)")
+      cw.clearByColor(this.wonColor)
     } else if (state.status == "lost") {
-      cw.clearByColor("rgb(44, 136, 214)")
+      cw.clearByColor(this.lostColor)
     } else {
-      cw.clearByColor("rgb(52, 166, 251)")
+      cw.clearByColor(this.defaultColor)
     }
   }
 }

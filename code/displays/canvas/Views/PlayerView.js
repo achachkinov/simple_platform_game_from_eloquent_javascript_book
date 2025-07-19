@@ -1,39 +1,38 @@
 import { StateUtils } from "../../../gameModel/actors/utils/StateUtils.js"
-import { VecUtils } from "../../../gameModel/actors/utils/VecUtils.js"
+import { ActorUtils } from "../../../gameModel/actors/utils/ActorUtils.js"
 
 class PlayerView {
   constructor( cw ) {
-    this.left = 0
-    this.top = 0
-    this.width = cw.width
-    this.height = cw.height
-    this.scaleWidth = 1;
-    this.scaleHeight = 1;
+    this.position = { x: 0, y: 0 }
+    this.size = { x: cw.width, y: cw.height }
+    this.scale = { x: 1, y: 1 }
+    this.rotateAngle = 0;
+    this.rotateSpeed = 0.001;
   }
 
   update( state ) {
-    const margin = this.width / 3;
+    const margin = this.size.x / 3;
     const player = StateUtils.player(state);
-    const center = VecUtils.plus( player.pos, VecUtils.times(player.size, 0.5));
+    const origin = ActorUtils.getOriginActor( player );
   
-    if (center.x < this.left + margin) {
-      this.left = Math.max(center.x - margin, 0);
-    } else if (center.x > this.left + this.width - margin) {
-      this.left = Math.min(center.x + margin - this.width, state.level.width - this.width);
+    if (origin.x < this.position.x + margin) {
+      this.position.x = Math.max(origin.x - margin, 0);
+    } else if (origin.x > this.position.x + this.size.x - margin) {
+      this.position.x = Math.min(origin.x + margin - this.size.x, state.level.width - this.size.x);
     }
-    if (center.y < this.top + margin) {
-      this.top = Math.max(center.y - margin, 0);
-    } else if (center.y > this.top + this.height - margin) {
-      this.top = Math.min(center.y + margin - this.height, state.level.height - this.height);
+    if (origin.y < this.position.y + margin) {
+      this.position.y = Math.max(origin.y - margin, 0);
+    } else if (origin.y > this.position.y + this.size.y - margin) {
+      this.position.y = Math.min(origin.y + margin - this.size.y, state.level.height - this.size.y);
     }
+    this.rotateAngle+=this.rotateSpeed
   }
 
-  getViewStruct() {
+  getStruct() {
     return { 
-      left: this.left,
-      top: this.top,
-      width: this.width,
-      height: this.height  
+      position: this.position,
+      size: this.size,
+      scale: this.scale
     }
   }
 }

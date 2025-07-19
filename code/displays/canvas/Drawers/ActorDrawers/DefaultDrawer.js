@@ -15,5 +15,6 @@ class DefaultDrawer {
     cw.drawSprite( this.sprite, views[ "minimap" ] )
   }
 }
+DefaultDrawer.prototype.type = "_default"
 
 export { DefaultDrawer }

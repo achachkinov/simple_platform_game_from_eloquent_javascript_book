@@ -1,8 +1,10 @@
+import { VecUtils } from "../../../gameModel/actors/utils/VecUtils.js";
 import { spriteImageStruct } from "../img/spritesImageStruct.js"
 
 class ContextWrapper {
   constructor( parent, level ) {
     this.scale = 40;
+    this.pixelsToOneMeter = 20;
     this.canvas = document.createElement("canvas");
     this.canvas.width = Math.min(1200, level.width * this.scale);
     this.canvas.height = Math.min(900, level.height * this.scale);
@@ -21,38 +23,51 @@ class ContextWrapper {
 
   drawSprite( sprite, view ) {
     const spriteImageInfo = spriteImageStruct[sprite.name];
-    const totalPosition = this.#calculatePositionByView( sprite, view );
-    if ( sprite.flip ) {
-      this.cx.save();
-      this.#flipHorizontally( totalPosition.x*this.scale + spriteImageInfo.width*view.scaleWidth*(this.scale/20) / 2);
-    }
+    const spriteImageScaleOnScreen = VecUtils.times(spriteImageInfo.size, 1/this.pixelsToOneMeter)
+    const spriteOnScreenInfo = this.#calculatePositionByView( sprite, view, spriteImageScaleOnScreen );
+    this.cx.save();
+    this.#flipAndRotate( sprite, spriteOnScreenInfo );
     this.cx.drawImage(
       spriteImageInfo.src, 
-      spriteImageInfo.x, 
-      spriteImageInfo.y, 
-      spriteImageInfo.width, 
-      spriteImageInfo.height, 
-      totalPosition.x*this.scale, 
-      totalPosition.y*this.scale, 
-      spriteImageInfo.width*totalPosition.width*this.scale/20, 
-      spriteImageInfo.height*totalPosition.height*this.scale/20);
-
+      spriteImageInfo.position.x, 
+      spriteImageInfo.position.y, 
+      spriteImageInfo.size.x, 
+      spriteImageInfo.size.y, 
+      spriteOnScreenInfo.position.x*this.scale, 
+      spriteOnScreenInfo.position.y*this.scale, 
+      spriteOnScreenInfo.size.x*this.scale, 
+      spriteOnScreenInfo.size.y*this.scale
+    );
+    this.cx.restore();
+  }
+  #calculatePositionByView( sprite, view, spriteImageScaleOnScreen ) {
+    const viewStruct = view.getStruct();
+    const viewHalfSize = VecUtils.factor( VecUtils.times( viewStruct.size, 0.5 ), viewStruct.scale )
+    const rotateAngle = sprite.rotateAngle + view.rotateAngle;
+    const positionBeforeRotate = VecUtils.factor( VecUtils.minus( sprite.position, viewStruct.position ), viewStruct.scale)
+    const position = VecUtils.plus( VecUtils.rotate( VecUtils.minus( positionBeforeRotate, viewHalfSize ), rotateAngle ), viewHalfSize )
+    const size = VecUtils.factor(spriteImageScaleOnScreen, viewStruct.scale)
+    const origin = VecUtils.plus( position, VecUtils.factor( VecUtils.times(spriteImageScaleOnScreen, 0.5), viewStruct.scale ) )
+    return {
+      position: position,
+      size: size,
+      origin: origin, 
+      rotateAngle: rotateAngle
+    }
+  }
+  #flipAndRotate( sprite, spriteOnScreenInfo ) {
+    const x = (spriteOnScreenInfo.origin.x-spriteOnScreenInfo.position.x)*this.scale
+    const y = (spriteOnScreenInfo.origin.y-spriteOnScreenInfo.position.y)*this.scale
+    const x1 = spriteOnScreenInfo.position.x*this.scale
+    const y1 = spriteOnScreenInfo.position.y*this.scale
+    this.cx.translate( x1, y1 );
+    this.cx.rotate(spriteOnScreenInfo.rotateAngle);
     if ( sprite.flip ) {
-      this.cx.restore();
+      this.cx.translate( x, y);
+      this.cx.scale(-1, 1);
+      this.cx.translate( -x, -y);
     }
-  }
-  #calculatePositionByView( sprite, view ) {
-    return { 
-      x: (sprite.position.x - view.left)*view.scaleWidth,
-      y: (sprite.position.y - view.top)*view.scaleHeight,
-      width: view.scaleWidth,
-      height: view.scaleHeight
-    }
-  }
-  #flipHorizontally( around ) {
-    this.cx.translate(around, 0);
-    this.cx.scale(-1, 1);
-    this.cx.translate(-around, 0);
+    this.cx.translate( -x1, -y1);
   }
 
   get height() {
