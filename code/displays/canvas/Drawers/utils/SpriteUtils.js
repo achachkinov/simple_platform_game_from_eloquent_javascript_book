@@ -11,7 +11,8 @@ class SpriteUtils {
             flipped: false,
             position: { x: 0, y: 0 },
             rotateAngle: 0,
-            scale: { x: 1, y: 1 }
+            scale: { x: 1, y: 1 },
+            drawByOrigin: false
         }
         return sprite
     }

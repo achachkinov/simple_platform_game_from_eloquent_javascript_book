@@ -1,4 +1,5 @@
 import { SpriteUtils } from "../../drawers/utils/SpriteUtils.js";
+import { ActorUtils } from "../../../../gameModel/actors/utils/ActorUtils.js"
 
 class PlayerDrawer {
 
@@ -7,21 +8,21 @@ class PlayerDrawer {
   constructor() {
     this.flipPlayer = false;
     this.status
-    this.playerXOverlap = 0.2
     this.#initializeSprites();
   }
 
   #initializeSprites() {
     this.sprite = SpriteUtils.createDefaultSprite("rest");
+    this.minimapSprite = SpriteUtils.createDefaultSprite("minimap_player");
   }
 
   draw(state, views, actor, cw) {
-    this.sprite.position.x = actor.pos.x - this.playerXOverlap;
-    this.sprite.position.y = actor.pos.y;
+    this.sprite.position = ActorUtils.getOriginActor( actor );
     this.sprite.name = this.#getStatus( actor );
     this.sprite.flip = this.#getFlipPlayer( actor )
-    cw.drawSprite( this.sprite, views["main"] )
-    cw.drawSprite( this.sprite, views[ "minimap" ] )
+    this.minimapSprite.position = ActorUtils.getOriginActor( actor );
+    cw.drawSprite( this.sprite, "main" )
+    cw.drawSprite( this.minimapSprite, "minimap" )
   }
   #getFlipPlayer( actor ) {
     if (actor.speed.x != 0) {

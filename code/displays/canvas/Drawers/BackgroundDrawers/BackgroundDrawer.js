@@ -21,10 +21,13 @@ class BackgroundDrawer {
         const tile = state.level.rows[y][x];
         if (tile == "empty") continue;
         const sprite = SpriteUtils.createDefaultSprite(tile);
-        sprite.position.x = x
-        sprite.position.y = y
-        cw.drawSprite( sprite, views["main"] )
-        cw.drawSprite( sprite, views[ "minimap" ] )
+        const minimapSprite = SpriteUtils.createDefaultSprite("minimap_" + tile);
+        sprite.position.x = x + 0.5
+        sprite.position.y = y + 0.5
+        minimapSprite.position.x = x + 0.5
+        minimapSprite.position.y = y + 0.5
+        cw.drawSprite( sprite, "main" )
+        cw.drawSprite( minimapSprite, "minimap" )
       }
     }
   } 

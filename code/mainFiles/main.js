@@ -15,12 +15,13 @@ import { PlayerDrawer } from "../displays/canvas/drawers/actorDrawers/PlayerDraw
 import { DefaultDrawer } from "../displays/canvas/drawers/actorDrawers/DefaultDrawer.js";
 import { PlayerView } from "../displays/canvas/views/PlayerView.js"
 import { MinimapView } from "../displays/canvas/views/MinimapView.js"
+import { SkyImageDrawer } from "../displays/canvas/drawers/backgroundDrawers/SkyImageDrawer.js"
 
  
 const TRACK_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp"]
 const ACTOR_CLASSES = [ Player, Lava, Coin ]
 
-const BACKGROUND_DRAWERS = [ SkyDrawer, BackgroundDrawer ]
+const BACKGROUND_DRAWERS = [ SkyDrawer, SkyImageDrawer, BackgroundDrawer ]
 const ACTOR_DRAWERS = [ PlayerDrawer, LavaDrawer, CoinDrawer, DefaultDrawer ]
 const VIEWS = [ PlayerView, MinimapView ]
 

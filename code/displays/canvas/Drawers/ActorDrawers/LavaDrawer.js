@@ -1,4 +1,5 @@
 import { SpriteUtils } from "../../drawers/utils/SpriteUtils.js";
+import { ActorUtils } from "../../../../gameModel/actors/utils/ActorUtils.js"
 
 class LavaDrawer {
 
@@ -6,13 +7,16 @@ class LavaDrawer {
 
   constructor() {
     this.sprite = SpriteUtils.createDefaultSprite("lava");
+    this.minimapSprite = SpriteUtils.createDefaultSprite("minimap_lava");
+    this.spriteSpeed = 0.01
   }
 
   draw(state, views, actor, cw ) {
-    this.sprite.position.x = actor.pos.x;
-    this.sprite.position.y = actor.pos.y;
-    cw.drawSprite( this.sprite, views["main"] )
-    cw.drawSprite( this.sprite, views[ "minimap" ] )
+    this.sprite.rotateAngle += this.spriteSpeed;
+    this.sprite.position = ActorUtils.getOriginActor( actor );
+    this.minimapSprite.position = ActorUtils.getOriginActor( actor );
+    cw.drawSprite( this.sprite, "main" )
+    cw.drawSprite( this.minimapSprite, "minimap" )
   }
 }
 LavaDrawer.prototype.type = "lava"

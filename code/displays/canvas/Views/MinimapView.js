@@ -7,11 +7,11 @@ class MinimapView {
     this.size = { x: cw.width, y: cw.height }
     this.scale = { x: 0.2, y: 0.2 }
     this.rotateAngle = 0;
-    this.rotateSpeed = 0.002;
+    //this.rotateSpeed = 0.002;
   }
 
   update( state ) {
-    const margin = this.width / 3;
+    const margin = this.size.x / 3;
     const player = StateUtils.player(state);
     const origin = ActorUtils.getOriginActor( player );
   
@@ -25,7 +25,7 @@ class MinimapView {
     } else if (origin.y > this.position.y + this.size.y - margin) {
       this.position.y = Math.min(origin.y + margin - this.size.y, state.level.height - this.size.y);
     }
-    this.rotateAngle+=this.rotateSpeed
+    //this.rotateAngle+=this.rotateSpeed
   }
 
   getStruct() {

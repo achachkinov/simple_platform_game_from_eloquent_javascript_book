@@ -32,14 +32,16 @@ class CanvasDisplay {
     }
   }
 
-  clear() {
+  remove() {
     this.#cw.remove();
   }
 
   syncState(state) {
+    this.#cw.clear();
     this.#updateViewport(state);
     this.#drawBackgroundDrawers(state);
     this.#drawActorsDrawers(state);
+    this.#cw.display(  this.#views );
   }
 
   #updateViewport(state) {

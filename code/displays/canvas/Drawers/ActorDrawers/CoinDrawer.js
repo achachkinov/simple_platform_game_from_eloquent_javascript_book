@@ -1,4 +1,5 @@
 import { SpriteUtils } from "../../drawers/utils/SpriteUtils.js";
+import { ActorUtils } from "../../../../gameModel/actors/utils/ActorUtils.js"
 
 class CoinDrawer {
 
@@ -6,13 +7,14 @@ class CoinDrawer {
 
   constructor() {
     this.sprite = SpriteUtils.createDefaultSprite("coin");
+    this.minimapSprite = SpriteUtils.createDefaultSprite("minimap_coin");
   }
 
   draw(state, views, actor, cw ) {
-    this.sprite.position.x = actor.pos.x;
-    this.sprite.position.y = actor.pos.y;
-    cw.drawSprite( this.sprite, views["main"] )
-    cw.drawSprite( this.sprite, views[ "minimap" ] )
+    this.sprite.position = ActorUtils.getOriginActor( actor );
+    this.minimapSprite.position = ActorUtils.getOriginActor( actor );
+    cw.drawSprite( this.sprite, "main" )
+    cw.drawSprite( this.minimapSprite, "minimap" )
   }
 }
 CoinDrawer.prototype.type = "coin"

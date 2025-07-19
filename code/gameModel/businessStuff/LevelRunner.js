@@ -46,7 +46,7 @@ class LevelRunner {
       this.#ending -= time;
       return true;
     } else {
-      this.#display.clear();
+      this.#display.remove();
       this.#resolve(this.#state.status);
       return false;
     }

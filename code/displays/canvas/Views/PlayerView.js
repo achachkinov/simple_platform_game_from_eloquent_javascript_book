@@ -7,7 +7,6 @@ class PlayerView {
     this.size = { x: cw.width, y: cw.height }
     this.scale = { x: 1, y: 1 }
     this.rotateAngle = 0;
-    this.rotateSpeed = 0.001;
   }
 
   update( state ) {
@@ -25,7 +24,7 @@ class PlayerView {
     } else if (origin.y > this.position.y + this.size.y - margin) {
       this.position.y = Math.min(origin.y + margin - this.size.y, state.level.height - this.size.y);
     }
-    this.rotateAngle+=this.rotateSpeed
+    //this.rotateAngle+=0.001
   }
 
   getStruct() {
